@@ -1,5 +1,4 @@
 ![npm downloads total](https://img.shields.io/npm/dt/serverless-plugin-pilot-light.svg) ![npm version](https://img.shields.io/npm/v/serverless-plugin-pilot-light.svg) ![npm license](https://img.shields.io/npm/l/serverless-plugin-pilot-light.svg)
-[![Build Status](https://travis-ci.com/JetClosing/serverless-plugin-pilot-light.svg?branch=master)](https://travis-ci.com/JetClosing/serverless-plugin-pilot-light)
 
 ## Installation
 
