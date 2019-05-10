@@ -5,16 +5,16 @@ const {
 
 // !!WARNING!! Do not include a '.' in the directory name this confuses
 // sls during local invokes and compilers with a MODULE_NOT_FOUND error
-const BUILD_DIR = 'ignitor';
+const BUILD_DIR = 'pilot_light';
 
-const DEFAULT_WRAPPER = 'ignitor.ignitor';
+const DEFAULT_WRAPPER = 'pilot_light.pilot_light';
 
 const prebuild = () => {
   mkdir(BUILD_DIR);
 
   // prebuild default wrapper into the build directory
-  const defaultWrapper = read(path.resolve(__dirname, 'ignitor.js'));
-  const defaultWrapperPath = path.resolve(BUILD_DIR, 'ignitor.js');
+  const defaultWrapper = read(path.resolve(__dirname, 'pilot_light.js'));
+  const defaultWrapperPath = path.resolve(BUILD_DIR, 'pilot_light.js');
   write(defaultWrapperPath, defaultWrapper);
 };
 

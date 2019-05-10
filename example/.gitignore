@@ -2,8 +2,8 @@
 .serverless_plugins
 /node_modules/
 
-# Ignore ignitor
-ignitor
+# Ignore pilot_light
+pilot_light
 .output
 
 # Ignore webpack

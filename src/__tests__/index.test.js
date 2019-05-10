@@ -1,8 +1,8 @@
 const build = require('../utils/build');
-const PluginIgnitor = require('../index');
+const Pluginpilot_light = require('../index');
 
 const DEFAULT_CUSTOM = {
-  ignitor: [
+  pilot_light: [
     'hello',
     '/good.*/',
   ],
@@ -19,21 +19,21 @@ const gensls = (custom = DEFAULT_CUSTOM) => ({
       hello: {
         handler: 'handlers.hello',
         timeout: 15,
-        ignitor: {
+        pilot_light: {
           rate: 'rate(3 minutes)',
         },
         name: 'example-beta-hello',
       },
       goodday: {
         handler: 'handlers.goodday',
-        ignitor: {
+        pilot_light: {
           rate: 'rate(3 minutes)',
         },
         name: 'example-beta-goodday',
       },
       goodbye: {
         handler: 'handlers.goodbye',
-        ignitor: {
+        pilot_light: {
           wrapper: 'customWrapper.default',
           input: {
             custom: 'property',
@@ -67,7 +67,7 @@ afterEach(() => {
 
 test('schedule', () => {
   const sls = gensls();
-  const plugin = new PluginIgnitor(sls, {
+  const plugin = new Pluginpilot_light(sls, {
     stage: 'beta',
   });
 
@@ -81,7 +81,7 @@ test('schedule', () => {
 test('schedule - no resources', () => {
   const sls = gensls();
   delete sls.service.resources;
-  const plugin = new PluginIgnitor(sls, {
+  const plugin = new Pluginpilot_light(sls, {
     stage: 'beta',
   });
 
@@ -92,9 +92,9 @@ test('schedule - no resources', () => {
   expect(plugin.scheduled).toEqual(['hello', 'goodday', 'goodbye']);
 });
 
-test('schedule - no ignitor option', () => {
+test('schedule - no pilot_light option', () => {
   const sls = gensls({});
-  const plugin = new PluginIgnitor(sls, {
+  const plugin = new Pluginpilot_light(sls, {
     stage: 'beta',
   });
 
@@ -102,12 +102,12 @@ test('schedule - no ignitor option', () => {
   plugin.schedule();
   expect(plugin.service).toEqual('example');
   expect(plugin.stage).toEqual('beta');
-  expect(plugin.scheduled).toEqual(['hello', 'goodday', 'goodbye', 'ignitorDelegate']);
+  expect(plugin.scheduled).toEqual(['hello', 'goodday', 'goodbye', 'pilot_lightDelegate']);
 });
 
 test('wrap', () => {
   const sls = gensls();
-  const plugin = new PluginIgnitor(sls, {
+  const plugin = new Pluginpilot_light(sls, {
     stage: 'beta',
   });
 
@@ -116,10 +116,10 @@ test('wrap', () => {
   plugin.wrap();
   expect(plugin.mapping).toEqual({
     'rate(3 minutes)': [{
-      input: { ignitor: true },
+      input: { pilot_light: true },
       lambda: 'example-beta-hello',
     }, {
-      input: { ignitor: true },
+      input: { pilot_light: true },
       lambda: 'example-beta-goodday',
     }],
     'rate(5 minutes)': [{
@@ -132,7 +132,7 @@ test('wrap', () => {
 test('deploy', () => {
   expect.assertions(1);
   const sls = gensls();
-  const plugin = new PluginIgnitor(sls, {
+  const plugin = new Pluginpilot_light(sls, {
     stage: 'beta',
   });
 
@@ -143,6 +143,6 @@ test('deploy', () => {
     // not a problem, we just want to see that the invoke functions are being called
     plugin.deploy();
   } catch (e) {
-    expect(e.message).toEqual("Command failed: aws lambda invoke --function-name 'example-beta-ignitorDelegate' --invocation-type Event --payload '{\"rate\":\"rate(3 minutes)\"}' .output");
+    expect(e.message).toEqual("Command failed: aws lambda invoke --function-name 'example-beta-pilot_lightDelegate' --invocation-type Event --payload '{\"rate\":\"rate(3 minutes)\"}' .output");
   }
 });

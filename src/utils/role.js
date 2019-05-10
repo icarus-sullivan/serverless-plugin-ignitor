@@ -1,5 +1,5 @@
 
-const DELEGATE_ROLE_NAME = 'IgnitorDelegateLambdaFunctionRole';
+const DELEGATE_ROLE_NAME = 'pilot_lightDelegateLambdaFunctionRole';
 
 const attachRoleToLambda = (lambda) => {
   // eslint-disable-next-line no-param-reassign
@@ -53,7 +53,7 @@ const createLambdaRole = (resources, { stage, service }) => {
                         {
                           Ref: 'AWS::AccountId',
                         },
-                        `log-group:/aws/lambda/${service}-${stage}-ignitorDelegate:*`,
+                        `log-group:/aws/lambda/${service}-${stage}-pilot_lightDelegate:*`,
                       ],
                     ],
                   },
@@ -76,7 +76,7 @@ const createLambdaRole = (resources, { stage, service }) => {
                         {
                           Ref: 'AWS::AccountId',
                         },
-                        `log-group:/aws/lambda/${service}-${stage}-ignitorDelegate:*:*`,
+                        `log-group:/aws/lambda/${service}-${stage}-pilot_lightDelegate:*:*`,
                       ],
                     ],
                   },

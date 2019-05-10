@@ -9,7 +9,7 @@ const get = require('./utils/get');
 const delegate = require('./utils/delegate');
 const role = require('./utils/role');
 
-class PluginIgnitor {
+class PluginPilotLight {
   constructor(sls, options) {
     this.sls = sls;
     this.optStage = options.stage;
@@ -19,17 +19,17 @@ class PluginIgnitor {
     this.provider = this.sls.getProvider('aws');
 
     // trick sls into seeing the late-lambda creation
-    this.sls.service.functions.ignitorDelegate = {
-      handler: 'ignitor/delegate.handler',
+    this.sls.service.functions.pilot_lightDelegate = {
+      handler: 'pilot_light/delegate.handler',
       timeout: 30,
       events: [],
     };
 
     this.commands = {
-      ignitor: {
+      pilot_light: {
         usage: 'Keep lambda functions nice and toasty',
         lifecycleEvents: [
-          'ignitor',
+          'pilot_light',
         ],
         commands: {
           schedule: {
@@ -63,55 +63,55 @@ class PluginIgnitor {
     /* istanbul ignore next */
     this.hooks = {
       'after:deploy:deploy': () => bPromise.bind(this)
-        .then(() => this.sls.pluginManager.spawn('ignitor:deploy'))
-        .then(() => this.sls.pluginManager.spawn('ignitor:clean')),
+        .then(() => this.sls.pluginManager.spawn('pilot_light:deploy'))
+        .then(() => this.sls.pluginManager.spawn('pilot_light:clean')),
 
       'before:package:createDeploymentArtifacts': () => bPromise.bind(this)
-        .then(() => this.sls.pluginManager.spawn('ignitor:schedule'))
-        .then(() => this.sls.pluginManager.spawn('ignitor:wrap')),
+        .then(() => this.sls.pluginManager.spawn('pilot_light:schedule'))
+        .then(() => this.sls.pluginManager.spawn('pilot_light:wrap')),
 
       'after:package:createDeploymentArtifacts': () => bPromise.bind(this)
-        .then(() => this.sls.pluginManager.spawn('ignitor:clean')),
+        .then(() => this.sls.pluginManager.spawn('pilot_light:clean')),
 
       'before:deploy:function:packageFunction': () => bPromise.bind(this)
-        .then(() => this.sls.pluginManager.spawn('ignitor:schedule'))
-        .then(() => this.sls.pluginManager.spawn('ignitor:wrap')),
+        .then(() => this.sls.pluginManager.spawn('pilot_light:schedule'))
+        .then(() => this.sls.pluginManager.spawn('pilot_light:wrap')),
 
       'before:invoke:local:invoke': () => bPromise.bind(this)
-        .then(() => this.sls.pluginManager.spawn('ignitor:wrap')),
+        .then(() => this.sls.pluginManager.spawn('pilot_light:wrap')),
 
       'after:invoke:local:invoke': () => bPromise.bind(this)
-        .then(() => this.sls.pluginManager.spawn('ignitor:clean')),
+        .then(() => this.sls.pluginManager.spawn('pilot_light:clean')),
 
       'before:run:run': () => bPromise.bind(this)
-        .then(() => this.sls.pluginManager.spawn('ignitor:wrap')),
+        .then(() => this.sls.pluginManager.spawn('pilot_light:wrap')),
 
       'after:run:run': () => bPromise.bind(this)
-        .then(() => this.sls.pluginManager.spawn('ignitor:clean')),
+        .then(() => this.sls.pluginManager.spawn('pilot_light:clean')),
 
-      // used when debugging ignitor via command serverless ignitor
-      'ignitor:ignitor': () => bPromise.bind(this)
+      // used when debugging pilot_light via command serverless pilot_light
+      'pilot_light:pilot_light': () => bPromise.bind(this)
         .then(build.prebuild)
         .then(this.schedule)
         .then(this.wrap),
 
-      'ignitor:schedule:schedule': () => bPromise.bind(this)
+      'pilot_light:schedule:schedule': () => bPromise.bind(this)
         .then(this.schedule),
 
-      'ignitor:wrap:wrap': () => bPromise.bind(this)
+      'pilot_light:wrap:wrap': () => bPromise.bind(this)
         .then(build.prebuild)
         .then(this.wrap),
 
-      'ignitor:deploy:deploy': () => bPromise.bind(this)
+      'pilot_light:deploy:deploy': () => bPromise.bind(this)
         .then(this.deploy),
 
-      'ignitor:clean:clean': () => bPromise.bind(this)
+      'pilot_light:clean:clean': () => bPromise.bind(this)
         .then(build.clean),
     };
   }
 
   schedule() {
-    const options = get(this, 'sls.service.custom.ignitor', []);
+    const options = get(this, 'sls.service.custom.pilot_light', []);
     const keys = options.length === 0
       ? new RegExp('.*', 'g')
       : new RegExp(
@@ -129,7 +129,7 @@ class PluginIgnitor {
       this.sls.service.resources = { Resources: {} };
     }
 
-    role.attachRoleToLambda(this.sls.service.functions.ignitorDelegate);
+    role.attachRoleToLambda(this.sls.service.functions.pilot_lightDelegate);
     role.createLambdaRole(this.sls.service.resources.Resources, {
       stage: this.stage,
       service: this.service,
@@ -141,16 +141,16 @@ class PluginIgnitor {
 
     const defaultEvent = {
       rate: 'rate(5 minutes)',
-      wrapper: 'ignitor.ignitor',
+      wrapper: 'pilot_light.pilot_light',
       input: {
-        ignitor: true,
+        pilot_light: true,
       },
     };
     const { functions } = this.sls.service;
     this.scheduled.forEach((name) => {
       const config = {
         ...defaultEvent,
-        ...functions[name].ignitor,
+        ...functions[name].pilot_light,
       };
       const { rate, wrapper, input } = config;
       if (!this.mapping[rate]) {
@@ -172,7 +172,7 @@ class PluginIgnitor {
     build.writeToBuildDir('delegate.js', delegateCode);
 
     // create events for the delegate method, that will then call other lambdas
-    functions.ignitorDelegate.events = delegate.events(this.mapping);
+    functions.pilot_lightDelegate.events = delegate.events(this.mapping);
   }
 
   deploy() {
@@ -188,7 +188,7 @@ class PluginIgnitor {
       const event = { rate };
       const cmd = [
         'aws lambda invoke',
-        `--function-name '${this.service}-${this.stage}-ignitorDelegate'`,
+        `--function-name '${this.service}-${this.stage}-pilot_lightDelegate'`,
         '--invocation-type Event',
         `--payload '${JSON.stringify(event)}'`,
         '.output',
@@ -201,4 +201,4 @@ class PluginIgnitor {
   }
 }
 
-module.exports = PluginIgnitor;
+module.exports = PluginPilotLight;

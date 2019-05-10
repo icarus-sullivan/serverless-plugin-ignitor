@@ -1,7 +1,7 @@
-service: ignitor-example
+service: pilot_light-example
 
 custom: 
-  ignitor:
+  pilot_light:
     - hello
     - /good.*/
       
@@ -20,12 +20,12 @@ functions:
   hello:
     handler: handlers.hello
     timeout: 10
-    ignitor:
+    pilot_light:
       rate: 'rate(3 minutes)'
 
   goodbye:
     handler: handlers.goodbye
-    ignitor:
+    pilot_light:
       wrapper: customWrapper.default
       input:
         custom: 'property'
@@ -34,5 +34,5 @@ functions:
     handler: handlers.goodbye # re-used for brevity
 
 plugins:
-  - serverless-plugin-ignitor
+  - serverless-plugin-pilot-light
   - serverless-webpack

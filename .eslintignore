@@ -1,4 +1,4 @@
 **/node_modules/**
-**/ignitor/**
+**/pilot_light/**
 coverage/*
 example/webpack.config.js

@@ -1,8 +1,8 @@
 {
-  "name": "serverless-plugin-ignitor",
+  "name": "serverless-plugin-pilot-light",
   "version": "0.2.0",
-  "description": "Keep lambda functions nice and toasty",
-  "repository": "https://github.com/JetClosing/serverless-plugin-ignitor.git",
+  "description": "Eliminates lambda cold starts",
+  "repository": "https://github.com/icarus-sullivan/serverless-plugin-pilot-light.git",
   "main": "src/index.js",
   "files": [
     "src/*"
@@ -15,7 +15,7 @@
   "keywords": [
     "run",
     "warm",
-    "ignitor",
+    "pilot_light",
     "cold",
     "starts",
     "lambda",

@@ -2,7 +2,7 @@
 
 exports[`wrap use default wrapper 1`] = `
 "const original = require('../src/handler').default;
-const wrapper = require('./ignitor').ignitor;
+const wrapper = require('./pilot_light').pilot_light;
 
 module.exports = { handler: wrapper(original) };"
 `;
