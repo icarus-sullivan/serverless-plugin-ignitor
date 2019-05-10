@@ -19,7 +19,7 @@ class PluginPilotLight {
     this.provider = this.sls.getProvider('aws');
 
     // trick sls into seeing the late-lambda creation
-    this.sls.service.functions.pilot_lightDelegate = {
+    this.sls.service.functions.pilotLightDelegate = {
       handler: 'pilot_light/delegate.handler',
       timeout: 30,
       events: [],
@@ -129,7 +129,7 @@ class PluginPilotLight {
       this.sls.service.resources = { Resources: {} };
     }
 
-    role.attachRoleToLambda(this.sls.service.functions.pilot_lightDelegate);
+    role.attachRoleToLambda(this.sls.service.functions.pilotLightDelegate);
     role.createLambdaRole(this.sls.service.resources.Resources, {
       stage: this.stage,
       service: this.service,
@@ -172,7 +172,7 @@ class PluginPilotLight {
     build.writeToBuildDir('delegate.js', delegateCode);
 
     // create events for the delegate method, that will then call other lambdas
-    functions.pilot_lightDelegate.events = delegate.events(this.mapping);
+    functions.pilotLightDelegate.events = delegate.events(this.mapping);
   }
 
   deploy() {
@@ -188,7 +188,7 @@ class PluginPilotLight {
       const event = { rate };
       const cmd = [
         'aws lambda invoke',
-        `--function-name '${this.service}-${this.stage}-pilot_lightDelegate'`,
+        `--function-name '${this.service}-${this.stage}-pilotLightDelegate'`,
         '--invocation-type Event',
         `--payload '${JSON.stringify(event)}'`,
         '.output',

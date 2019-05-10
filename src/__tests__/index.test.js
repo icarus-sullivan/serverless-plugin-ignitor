@@ -1,5 +1,5 @@
 const build = require('../utils/build');
-const Pluginpilot_light = require('../index');
+const PluginPilotLight = require('../index');
 
 const DEFAULT_CUSTOM = {
   pilot_light: [
@@ -67,7 +67,7 @@ afterEach(() => {
 
 test('schedule', () => {
   const sls = gensls();
-  const plugin = new Pluginpilot_light(sls, {
+  const plugin = new PluginPilotLight(sls, {
     stage: 'beta',
   });
 
@@ -81,7 +81,7 @@ test('schedule', () => {
 test('schedule - no resources', () => {
   const sls = gensls();
   delete sls.service.resources;
-  const plugin = new Pluginpilot_light(sls, {
+  const plugin = new PluginPilotLight(sls, {
     stage: 'beta',
   });
 
@@ -94,7 +94,7 @@ test('schedule - no resources', () => {
 
 test('schedule - no pilot_light option', () => {
   const sls = gensls({});
-  const plugin = new Pluginpilot_light(sls, {
+  const plugin = new PluginPilotLight(sls, {
     stage: 'beta',
   });
 
@@ -102,12 +102,12 @@ test('schedule - no pilot_light option', () => {
   plugin.schedule();
   expect(plugin.service).toEqual('example');
   expect(plugin.stage).toEqual('beta');
-  expect(plugin.scheduled).toEqual(['hello', 'goodday', 'goodbye', 'pilot_lightDelegate']);
+  expect(plugin.scheduled).toEqual(['hello', 'goodday', 'goodbye', 'pilotLightDelegate']);
 });
 
 test('wrap', () => {
   const sls = gensls();
-  const plugin = new Pluginpilot_light(sls, {
+  const plugin = new PluginPilotLight(sls, {
     stage: 'beta',
   });
 
@@ -132,7 +132,7 @@ test('wrap', () => {
 test('deploy', () => {
   expect.assertions(1);
   const sls = gensls();
-  const plugin = new Pluginpilot_light(sls, {
+  const plugin = new PluginPilotLight(sls, {
     stage: 'beta',
   });
 
@@ -143,6 +143,6 @@ test('deploy', () => {
     // not a problem, we just want to see that the invoke functions are being called
     plugin.deploy();
   } catch (e) {
-    expect(e.message).toEqual("Command failed: aws lambda invoke --function-name 'example-beta-pilot_lightDelegate' --invocation-type Event --payload '{\"rate\":\"rate(3 minutes)\"}' .output");
+    expect(e.message).toEqual("Command failed: aws lambda invoke --function-name 'example-beta-pilotLightDelegate' --invocation-type Event --payload '{\"rate\":\"rate(3 minutes)\"}' .output");
   }
 });
