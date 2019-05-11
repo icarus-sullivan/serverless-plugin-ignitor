@@ -5,17 +5,21 @@ const {
 
 // !!WARNING!! Do not include a '.' in the directory name this confuses
 // sls during local invokes and compilers with a MODULE_NOT_FOUND error
-const BUILD_DIR = 'pilotLight';
+const BUILD_DIR = 'flambe';
 
-const DEFAULT_WRAPPER = 'pilotLight.pilotLight';
+const DEFAULT_WRAPPER = 'flambe.flambe';
+
+const writeToBuildDir = (name, contents) => write(
+  path.resolve(BUILD_DIR, name),
+  contents,
+);
 
 const prebuild = () => {
   mkdir(BUILD_DIR);
 
   // prebuild default wrapper into the build directory
-  const defaultWrapper = read(path.resolve(__dirname, 'pilotLight.js'));
-  const defaultWrapperPath = path.resolve(BUILD_DIR, 'pilotLight.js');
-  write(defaultWrapperPath, defaultWrapper);
+  const defaultWrapper = read(path.resolve(__dirname, 'flambe.js'));
+  writeToBuildDir('flame.js', defaultWrapper);
 };
 
 const wrap = (name, handler, wrapper = DEFAULT_WRAPPER) => {
@@ -24,21 +28,15 @@ const wrap = (name, handler, wrapper = DEFAULT_WRAPPER) => {
 
   const overridePath = `${BUILD_DIR}/${name}.handler`;
   const overrideFilename = `${name}.js`;
-  const outputPath = path.resolve(BUILD_DIR, overrideFilename);
 
   const requireOriginal = `const original = require('../${inputPath}').${functionName};`;
   const requireWrapperPrefix = wrapper === DEFAULT_WRAPPER ? '.' : '..';
   const requireWrapper = `const wrapper = require('${requireWrapperPrefix}/${wrapperPath}').${wrapperFunctionName};`;
   const exportModule = 'module.exports = { handler: wrapper(original) };';
 
-  write(outputPath, `${requireOriginal}\n${requireWrapper}\n\n${exportModule}`);
+  writeToBuildDir(overrideFilename, `${requireOriginal}\n${requireWrapper}\n\n${exportModule}`);
   return overridePath;
 };
-
-const writeToBuildDir = (name, contents) => write(
-  path.resolve(BUILD_DIR, name),
-  contents,
-);
 
 const clean = () => rm(BUILD_DIR);
 

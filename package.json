@@ -1,8 +1,8 @@
 {
-  "name": "serverless-plugin-pilot-light",
-  "version": "0.3.0",
+  "name": "serverless-plugin-flambe",
+  "version": "0.0.1",
   "description": "Eliminates lambda cold starts",
-  "repository": "https://github.com/icarus-sullivan/serverless-plugin-pilot-light.git",
+  "repository": "https://github.com/icarus-sullivan/serverless-plugin-flambe.git",
   "main": "src/index.js",
   "files": [
     "src/*"
@@ -15,7 +15,7 @@
   "keywords": [
     "run",
     "warm",
-    "pilotLight",
+    "flambe",
     "cold",
     "starts",
     "lambda",

@@ -1,19 +1,19 @@
-const { pilotLight } = require('../pilotLight');
+const { flambe } = require('../flambe');
 
 const PING_EVENT = {
-  pilotLight: true,
+  flambe: true,
 };
 
 const ORIGINAL_EVENT = {
   source: 'aws:events',
 };
 
-describe('pilotLight', () => {
+describe('flambe', () => {
   test('ping test', () => {
     const original = jest.fn();
     const callback = jest.fn();
 
-    pilotLight(original)(PING_EVENT, null, callback);
+    flambe(original)(PING_EVENT, null, callback);
     expect(original).not.toHaveBeenCalled();
     expect(callback).toHaveBeenCalledWith(null, 'pinged');
   });
@@ -22,7 +22,7 @@ describe('pilotLight', () => {
     const original = jest.fn((e, t, c) => c(null, 'success'));
     const callback = jest.fn();
 
-    pilotLight(original)(ORIGINAL_EVENT, null, callback);
+    flambe(original)(ORIGINAL_EVENT, null, callback);
     expect(original).toHaveBeenCalledWith(ORIGINAL_EVENT, null, callback);
     expect(callback).toHaveBeenCalledWith(null, 'success');
   });

@@ -5,7 +5,7 @@ const rates = {
     {
       lambda: 'Example-dev-hello',
       input: {
-        pilotLight: true,
+        flambe: true,
       },
     },
   ],

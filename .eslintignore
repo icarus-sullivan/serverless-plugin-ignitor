@@ -1,4 +1,4 @@
 **/node_modules/**
-**/pilotLight/**
+**/flambe/**
 coverage/*
 example/webpack.config.js

@@ -1,7 +1,7 @@
-service: pilotLight-example
+service: flambe-example
 
 custom: 
-  pilotLight:
+  flambe:
     - hello
     - /good.*/
       
@@ -20,12 +20,12 @@ functions:
   hello:
     handler: handlers.hello
     timeout: 10
-    pilotLight:
+    flambe:
       rate: 'rate(3 minutes)'
 
   goodbye:
     handler: handlers.goodbye
-    pilotLight:
+    flambe:
       wrapper: customWrapper.default
       input:
         custom: 'property'
@@ -34,5 +34,5 @@ functions:
     handler: handlers.goodbye # re-used for brevity
 
 plugins:
-  - serverless-plugin-pilot-light
+  - serverless-plugin-flambe
   - serverless-webpack

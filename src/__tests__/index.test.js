@@ -1,8 +1,8 @@
-const build = require('../utils/build');
-const PluginPilotLight = require('../index');
+const build = require('../build');
+const PluginFlambe = require('../index');
 
 const DEFAULT_CUSTOM = {
-  pilotLight: [
+  flambe: [
     'hello',
     '/good.*/',
   ],
@@ -19,21 +19,21 @@ const gensls = (custom = DEFAULT_CUSTOM) => ({
       hello: {
         handler: 'handlers.hello',
         timeout: 15,
-        pilotLight: {
+        flambe: {
           rate: 'rate(3 minutes)',
         },
         name: 'example-beta-hello',
       },
       goodday: {
         handler: 'handlers.goodday',
-        pilotLight: {
+        flambe: {
           rate: 'rate(3 minutes)',
         },
         name: 'example-beta-goodday',
       },
       goodbye: {
         handler: 'handlers.goodbye',
-        pilotLight: {
+        flambe: {
           wrapper: 'customWrapper.default',
           input: {
             custom: 'property',
@@ -67,7 +67,7 @@ afterEach(() => {
 
 test('schedule', () => {
   const sls = gensls();
-  const plugin = new PluginPilotLight(sls, {
+  const plugin = new PluginFlambe(sls, {
     stage: 'beta',
   });
 
@@ -81,7 +81,7 @@ test('schedule', () => {
 test('schedule - no resources', () => {
   const sls = gensls();
   delete sls.service.resources;
-  const plugin = new PluginPilotLight(sls, {
+  const plugin = new PluginFlambe(sls, {
     stage: 'beta',
   });
 
@@ -92,9 +92,9 @@ test('schedule - no resources', () => {
   expect(plugin.scheduled).toEqual(['hello', 'goodday', 'goodbye']);
 });
 
-test('schedule - no pilotLight option', () => {
+test('schedule - no flambe option', () => {
   const sls = gensls({});
-  const plugin = new PluginPilotLight(sls, {
+  const plugin = new PluginFlambe(sls, {
     stage: 'beta',
   });
 
@@ -102,12 +102,12 @@ test('schedule - no pilotLight option', () => {
   plugin.schedule();
   expect(plugin.service).toEqual('example');
   expect(plugin.stage).toEqual('beta');
-  expect(plugin.scheduled).toEqual(['hello', 'goodday', 'goodbye', 'pilotLightDelegate']);
+  expect(plugin.scheduled).toEqual(['hello', 'goodday', 'goodbye', 'flambeDelegate']);
 });
 
 test('wrap', () => {
   const sls = gensls();
-  const plugin = new PluginPilotLight(sls, {
+  const plugin = new PluginFlambe(sls, {
     stage: 'beta',
   });
 
@@ -116,10 +116,10 @@ test('wrap', () => {
   plugin.wrap();
   expect(plugin.mapping).toEqual({
     'rate(3 minutes)': [{
-      input: { pilotLight: true },
+      input: { flambe: true },
       lambda: 'example-beta-hello',
     }, {
-      input: { pilotLight: true },
+      input: { flambe: true },
       lambda: 'example-beta-goodday',
     }],
     'rate(5 minutes)': [{
@@ -132,7 +132,7 @@ test('wrap', () => {
 test('deploy', () => {
   expect.assertions(1);
   const sls = gensls();
-  const plugin = new PluginPilotLight(sls, {
+  const plugin = new PluginFlambe(sls, {
     stage: 'beta',
   });
 
@@ -143,6 +143,6 @@ test('deploy', () => {
     // not a problem, we just want to see that the invoke functions are being called
     plugin.deploy();
   } catch (e) {
-    expect(e.message).toEqual("Command failed: aws lambda invoke --function-name 'example-beta-pilotLightDelegate' --invocation-type Event --payload '{\"rate\":\"rate(3 minutes)\"}' .output");
+    expect(e.message).toEqual("Command failed: aws lambda invoke --function-name 'example-beta-flambeDelegate' --invocation-type Event --payload '{\"rate\":\"rate(3 minutes)\"}' .output");
   }
 });

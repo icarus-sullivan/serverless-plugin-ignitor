@@ -2,8 +2,8 @@
 .serverless_plugins
 /node_modules/
 
-# Ignore pilotLight
-pilotLight
+# Ignore flambe
+flambe
 .output
 
 # Ignore webpack

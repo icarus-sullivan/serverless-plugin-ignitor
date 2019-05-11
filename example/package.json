@@ -1,19 +1,19 @@
 {
-  "name": "serverless-plugin-pilot-light-example",
+  "name": "serverless-plugin-flambe-example",
   "version": "1.0.0",
-  "description": "Showing how serverless-plugin-pilot-light can be used",
+  "description": "Showing how serverless-plugin-flambe can be used",
   "scripts": {
     "deploy": "serverless deploy",
-    "local:hello": "serverless invoke local --function hello -p fixtures/pilotLight.json",
+    "local:hello": "serverless invoke local --function hello -p fixtures/flambe.json",
     "local:goodbye": "serverless invoke local -f goodbye",
-    "debug": "serverless pilotLight"
+    "debug": "serverless flambe"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",
     "@babel/preset-env": "^7.2.0",
     "babel-loader": "^8.0.4",
     "serverless": "^1.35.0",
-    "serverless-plugin-pilot-light": "../",
+    "serverless-plugin-flambe": "../",
     "serverless-webpack": "^5.2.0",
     "webpack": "^4.28.0",
     "webpack-node-externals": "^1.7.2"

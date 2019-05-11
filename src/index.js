@@ -2,14 +2,14 @@
 
 const bPromise = require('bluebird');
 
-const { cli } = require('./utils/file');
-const build = require('./utils/build');
-const log = require('./utils/log');
-const get = require('./utils/get');
-const delegate = require('./utils/delegate');
-const role = require('./utils/role');
+const { cli } = require('./file');
+const build = require('./build');
+const log = require('./log');
+const get = require('./get');
+const delegate = require('./delegate');
+const role = require('./role');
 
-class PluginPilotLight {
+class PluginFlambe {
   constructor(sls, options) {
     this.sls = sls;
     this.optStage = options.stage;
@@ -19,17 +19,17 @@ class PluginPilotLight {
     this.provider = this.sls.getProvider('aws');
 
     // trick sls into seeing the late-lambda creation
-    this.sls.service.functions.pilotLightDelegate = {
-      handler: 'pilotLight/delegate.handler',
+    this.sls.service.functions.flambeDelegate = {
+      handler: 'flambe/delegate.handler',
       timeout: 30,
       events: [],
     };
 
     this.commands = {
-      pilotLight: {
-        usage: 'Keep lambda functions nice and toasty',
+      flambe: {
+        usage: 'Eliminates lambda cold starts',
         lifecycleEvents: [
-          'pilotLight',
+          'flambe',
         ],
         commands: {
           schedule: {
@@ -63,55 +63,55 @@ class PluginPilotLight {
     /* istanbul ignore next */
     this.hooks = {
       'after:deploy:deploy': () => bPromise.bind(this)
-        .then(() => this.sls.pluginManager.spawn('pilotLight:deploy'))
-        .then(() => this.sls.pluginManager.spawn('pilotLight:clean')),
+        .then(() => this.sls.pluginManager.spawn('flambe:deploy'))
+        .then(() => this.sls.pluginManager.spawn('flambe:clean')),
 
       'before:package:createDeploymentArtifacts': () => bPromise.bind(this)
-        .then(() => this.sls.pluginManager.spawn('pilotLight:schedule'))
-        .then(() => this.sls.pluginManager.spawn('pilotLight:wrap')),
+        .then(() => this.sls.pluginManager.spawn('flambe:schedule'))
+        .then(() => this.sls.pluginManager.spawn('flambe:wrap')),
 
       'after:package:createDeploymentArtifacts': () => bPromise.bind(this)
-        .then(() => this.sls.pluginManager.spawn('pilotLight:clean')),
+        .then(() => this.sls.pluginManager.spawn('flambe:clean')),
 
       'before:deploy:function:packageFunction': () => bPromise.bind(this)
-        .then(() => this.sls.pluginManager.spawn('pilotLight:schedule'))
-        .then(() => this.sls.pluginManager.spawn('pilotLight:wrap')),
+        .then(() => this.sls.pluginManager.spawn('flambe:schedule'))
+        .then(() => this.sls.pluginManager.spawn('flambe:wrap')),
 
       'before:invoke:local:invoke': () => bPromise.bind(this)
-        .then(() => this.sls.pluginManager.spawn('pilotLight:wrap')),
+        .then(() => this.sls.pluginManager.spawn('flambe:wrap')),
 
       'after:invoke:local:invoke': () => bPromise.bind(this)
-        .then(() => this.sls.pluginManager.spawn('pilotLight:clean')),
+        .then(() => this.sls.pluginManager.spawn('flambe:clean')),
 
       'before:run:run': () => bPromise.bind(this)
-        .then(() => this.sls.pluginManager.spawn('pilotLight:wrap')),
+        .then(() => this.sls.pluginManager.spawn('flambe:wrap')),
 
       'after:run:run': () => bPromise.bind(this)
-        .then(() => this.sls.pluginManager.spawn('pilotLight:clean')),
+        .then(() => this.sls.pluginManager.spawn('flambe:clean')),
 
-      // used when debugging pilotLight via command serverless pilotLight
-      'pilotLight:pilotLight': () => bPromise.bind(this)
+      // used when debugging flambe via command serverless flambe
+      'flambe:flambe': () => bPromise.bind(this)
         .then(build.prebuild)
         .then(this.schedule)
         .then(this.wrap),
 
-      'pilotLight:schedule:schedule': () => bPromise.bind(this)
+      'flambe:schedule:schedule': () => bPromise.bind(this)
         .then(this.schedule),
 
-      'pilotLight:wrap:wrap': () => bPromise.bind(this)
+      'flambe:wrap:wrap': () => bPromise.bind(this)
         .then(build.prebuild)
         .then(this.wrap),
 
-      'pilotLight:deploy:deploy': () => bPromise.bind(this)
+      'flambe:deploy:deploy': () => bPromise.bind(this)
         .then(this.deploy),
 
-      'pilotLight:clean:clean': () => bPromise.bind(this)
+      'flambe:clean:clean': () => bPromise.bind(this)
         .then(build.clean),
     };
   }
 
   schedule() {
-    const options = get(this, 'sls.service.custom.pilotLight', []);
+    const options = get(this, 'sls.service.custom.flambe', []);
     const keys = options.length === 0
       ? new RegExp('.*', 'g')
       : new RegExp(
@@ -129,7 +129,7 @@ class PluginPilotLight {
       this.sls.service.resources = { Resources: {} };
     }
 
-    role.attachRoleToLambda(this.sls.service.functions.pilotLightDelegate);
+    role.attachRoleToLambda(this.sls.service.functions.flambeDelegate);
     role.createLambdaRole(this.sls.service.resources.Resources, {
       stage: this.stage,
       service: this.service,
@@ -141,16 +141,16 @@ class PluginPilotLight {
 
     const defaultEvent = {
       rate: 'rate(5 minutes)',
-      wrapper: 'pilotLight.pilotLight',
+      wrapper: 'flambe.flambe',
       input: {
-        pilotLight: true,
+        flambe: true,
       },
     };
     const { functions } = this.sls.service;
     this.scheduled.forEach((name) => {
       const config = {
         ...defaultEvent,
-        ...functions[name].pilotLight,
+        ...functions[name].flambe,
       };
       const { rate, wrapper, input } = config;
       if (!this.mapping[rate]) {
@@ -172,7 +172,7 @@ class PluginPilotLight {
     build.writeToBuildDir('delegate.js', delegateCode);
 
     // create events for the delegate method, that will then call other lambdas
-    functions.pilotLightDelegate.events = delegate.events(this.mapping);
+    functions.flambeDelegate.events = delegate.events(this.mapping);
   }
 
   deploy() {
@@ -188,7 +188,7 @@ class PluginPilotLight {
       const event = { rate };
       const cmd = [
         'aws lambda invoke',
-        `--function-name '${this.service}-${this.stage}-pilotLightDelegate'`,
+        `--function-name '${this.service}-${this.stage}-flambeDelegate'`,
         '--invocation-type Event',
         `--payload '${JSON.stringify(event)}'`,
         '.output',
@@ -201,4 +201,4 @@ class PluginPilotLight {
   }
 }
 
-module.exports = PluginPilotLight;
+module.exports = PluginFlambe;
