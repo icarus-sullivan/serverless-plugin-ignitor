@@ -125,7 +125,7 @@ class PluginFlambe {
     this.scheduled = Object.keys(this.sls.service.functions)
       .filter((name) => name.match(keys));
 
-    if (!this.sls.service.resources) {
+    if (!this.sls.service.resources || !this.sls.service.resources.Resources) {
       this.sls.service.resources = { Resources: {} };
     }
 
