@@ -14,12 +14,16 @@ const writeToBuildDir = (name, contents) => write(
   contents,
 );
 
+const cloneToBuildDir = (filename) => writeToBuildDir(
+  filename,
+  read(path.resolve(__dirname, filename)),
+);
+
 const prebuild = () => {
   mkdir(BUILD_DIR);
-
+  
   // prebuild default wrapper into the build directory
-  const defaultWrapper = read(path.resolve(__dirname, 'flambe.js'));
-  writeToBuildDir('flame.js', defaultWrapper);
+  cloneToBuildDir('flambe.js');
 };
 
 const wrap = (name, handler, wrapper = DEFAULT_WRAPPER) => {
