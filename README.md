@@ -26,7 +26,7 @@ plugins:
   - serverless-plugin-pilot-light
 ```
 
-By default all functions will then be automatically scheduled, wrapped to accept scheduled events, and immediately invoked post-deployment. If you want more granular control, options can be configured within a custom pilot_light variable.
+By default all functions will then be automatically scheduled, wrapped to accept scheduled events, and immediately invoked post-deployment. If you want more granular control, options can be configured within a custom pilotLight variable.
 
 ## Custom Declaration
 In case your project doesn't require all of your lambdas to be warm, you can list the name of a specific lambda or use regular expressions declared in the custom level variables.
@@ -34,7 +34,7 @@ In case your project doesn't require all of your lambdas to be warm, you can lis
 Example:
 ```
 custom:
-  pilot_light:
+  pilotLight:
     - hello
     - /good.*/ 
 ```
@@ -43,13 +43,13 @@ The above example will keep the function `hello` warm as well as functions prefi
 
 ## Lambda Configuration
 
-In order to fine-tune the rate, input, and flow of your code, lambdas are configured on a per-lambda basis using the field `pilot_light`
+In order to fine-tune the rate, input, and flow of your code, lambdas are configured on a per-lambda basis using the field `pilotLight`
 
 | Option | Values | Default | Description  |
 | :--- | :--- | :--- | :--- |
 | `rate` | AWS rate | 5 minutes | How often the lambda is to be called |
 | `wrapper` | String | null | The file path where a custom wrapper exists (same as a function handler definition) |
-| `input` | Object | { pilot_light: true } | The event the lambda receives, when it is pinged |
+| `input` | Object | { pilotLight: true } | The event the lambda receives, when it is pinged |
 
 #### Options Example
 
@@ -58,19 +58,19 @@ functions:
   hello:
     handler: handlers.hello
     timeout: 10
-    pilot_light: 
+    pilotLight: 
       rate: 'rate(3 minutes)'
       
   goodbye:
     handler: handlers.goodbye
-    pilot_light:
+    pilotLight:
       wrapper: wrapper.logger
       input:
         custom: 'property'
 ```
 
 #### Custom Wrapper(s)
-If you want to build a custom wrapper instead of the default pilot_light wrapper, it needs to be written as a higher-order-function. 
+If you want to build a custom wrapper instead of the default pilotLight wrapper, it needs to be written as a higher-order-function. 
 
 Example:
 ```

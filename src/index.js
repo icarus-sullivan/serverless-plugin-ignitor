@@ -20,16 +20,16 @@ class PluginPilotLight {
 
     // trick sls into seeing the late-lambda creation
     this.sls.service.functions.pilotLightDelegate = {
-      handler: 'pilot_light/delegate.handler',
+      handler: 'pilotLight/delegate.handler',
       timeout: 30,
       events: [],
     };
 
     this.commands = {
-      pilot_light: {
+      pilotLight: {
         usage: 'Keep lambda functions nice and toasty',
         lifecycleEvents: [
-          'pilot_light',
+          'pilotLight',
         ],
         commands: {
           schedule: {
@@ -63,55 +63,55 @@ class PluginPilotLight {
     /* istanbul ignore next */
     this.hooks = {
       'after:deploy:deploy': () => bPromise.bind(this)
-        .then(() => this.sls.pluginManager.spawn('pilot_light:deploy'))
-        .then(() => this.sls.pluginManager.spawn('pilot_light:clean')),
+        .then(() => this.sls.pluginManager.spawn('pilotLight:deploy'))
+        .then(() => this.sls.pluginManager.spawn('pilotLight:clean')),
 
       'before:package:createDeploymentArtifacts': () => bPromise.bind(this)
-        .then(() => this.sls.pluginManager.spawn('pilot_light:schedule'))
-        .then(() => this.sls.pluginManager.spawn('pilot_light:wrap')),
+        .then(() => this.sls.pluginManager.spawn('pilotLight:schedule'))
+        .then(() => this.sls.pluginManager.spawn('pilotLight:wrap')),
 
       'after:package:createDeploymentArtifacts': () => bPromise.bind(this)
-        .then(() => this.sls.pluginManager.spawn('pilot_light:clean')),
+        .then(() => this.sls.pluginManager.spawn('pilotLight:clean')),
 
       'before:deploy:function:packageFunction': () => bPromise.bind(this)
-        .then(() => this.sls.pluginManager.spawn('pilot_light:schedule'))
-        .then(() => this.sls.pluginManager.spawn('pilot_light:wrap')),
+        .then(() => this.sls.pluginManager.spawn('pilotLight:schedule'))
+        .then(() => this.sls.pluginManager.spawn('pilotLight:wrap')),
 
       'before:invoke:local:invoke': () => bPromise.bind(this)
-        .then(() => this.sls.pluginManager.spawn('pilot_light:wrap')),
+        .then(() => this.sls.pluginManager.spawn('pilotLight:wrap')),
 
       'after:invoke:local:invoke': () => bPromise.bind(this)
-        .then(() => this.sls.pluginManager.spawn('pilot_light:clean')),
+        .then(() => this.sls.pluginManager.spawn('pilotLight:clean')),
 
       'before:run:run': () => bPromise.bind(this)
-        .then(() => this.sls.pluginManager.spawn('pilot_light:wrap')),
+        .then(() => this.sls.pluginManager.spawn('pilotLight:wrap')),
 
       'after:run:run': () => bPromise.bind(this)
-        .then(() => this.sls.pluginManager.spawn('pilot_light:clean')),
+        .then(() => this.sls.pluginManager.spawn('pilotLight:clean')),
 
-      // used when debugging pilot_light via command serverless pilot_light
-      'pilot_light:pilot_light': () => bPromise.bind(this)
+      // used when debugging pilotLight via command serverless pilotLight
+      'pilotLight:pilotLight': () => bPromise.bind(this)
         .then(build.prebuild)
         .then(this.schedule)
         .then(this.wrap),
 
-      'pilot_light:schedule:schedule': () => bPromise.bind(this)
+      'pilotLight:schedule:schedule': () => bPromise.bind(this)
         .then(this.schedule),
 
-      'pilot_light:wrap:wrap': () => bPromise.bind(this)
+      'pilotLight:wrap:wrap': () => bPromise.bind(this)
         .then(build.prebuild)
         .then(this.wrap),
 
-      'pilot_light:deploy:deploy': () => bPromise.bind(this)
+      'pilotLight:deploy:deploy': () => bPromise.bind(this)
         .then(this.deploy),
 
-      'pilot_light:clean:clean': () => bPromise.bind(this)
+      'pilotLight:clean:clean': () => bPromise.bind(this)
         .then(build.clean),
     };
   }
 
   schedule() {
-    const options = get(this, 'sls.service.custom.pilot_light', []);
+    const options = get(this, 'sls.service.custom.pilotLight', []);
     const keys = options.length === 0
       ? new RegExp('.*', 'g')
       : new RegExp(
@@ -141,16 +141,16 @@ class PluginPilotLight {
 
     const defaultEvent = {
       rate: 'rate(5 minutes)',
-      wrapper: 'pilot_light.pilot_light',
+      wrapper: 'pilotLight.pilotLight',
       input: {
-        pilot_light: true,
+        pilotLight: true,
       },
     };
     const { functions } = this.sls.service;
     this.scheduled.forEach((name) => {
       const config = {
         ...defaultEvent,
-        ...functions[name].pilot_light,
+        ...functions[name].pilotLight,
       };
       const { rate, wrapper, input } = config;
       if (!this.mapping[rate]) {

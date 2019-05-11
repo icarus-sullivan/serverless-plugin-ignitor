@@ -2,7 +2,7 @@ const build = require('../utils/build');
 const PluginPilotLight = require('../index');
 
 const DEFAULT_CUSTOM = {
-  pilot_light: [
+  pilotLight: [
     'hello',
     '/good.*/',
   ],
@@ -19,21 +19,21 @@ const gensls = (custom = DEFAULT_CUSTOM) => ({
       hello: {
         handler: 'handlers.hello',
         timeout: 15,
-        pilot_light: {
+        pilotLight: {
           rate: 'rate(3 minutes)',
         },
         name: 'example-beta-hello',
       },
       goodday: {
         handler: 'handlers.goodday',
-        pilot_light: {
+        pilotLight: {
           rate: 'rate(3 minutes)',
         },
         name: 'example-beta-goodday',
       },
       goodbye: {
         handler: 'handlers.goodbye',
-        pilot_light: {
+        pilotLight: {
           wrapper: 'customWrapper.default',
           input: {
             custom: 'property',
@@ -92,7 +92,7 @@ test('schedule - no resources', () => {
   expect(plugin.scheduled).toEqual(['hello', 'goodday', 'goodbye']);
 });
 
-test('schedule - no pilot_light option', () => {
+test('schedule - no pilotLight option', () => {
   const sls = gensls({});
   const plugin = new PluginPilotLight(sls, {
     stage: 'beta',
@@ -116,10 +116,10 @@ test('wrap', () => {
   plugin.wrap();
   expect(plugin.mapping).toEqual({
     'rate(3 minutes)': [{
-      input: { pilot_light: true },
+      input: { pilotLight: true },
       lambda: 'example-beta-hello',
     }, {
-      input: { pilot_light: true },
+      input: { pilotLight: true },
       lambda: 'example-beta-goodday',
     }],
     'rate(5 minutes)': [{

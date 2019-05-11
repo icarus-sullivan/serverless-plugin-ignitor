@@ -2,8 +2,8 @@
 .serverless_plugins
 /node_modules/
 
-# Ignore pilot_light
-pilot_light
+# Ignore pilotLight
+pilotLight
 .output
 
 # Ignore webpack

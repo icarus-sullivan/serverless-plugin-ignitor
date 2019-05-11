@@ -1,6 +1,6 @@
 {
   "name": "serverless-plugin-pilot-light",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Eliminates lambda cold starts",
   "repository": "https://github.com/icarus-sullivan/serverless-plugin-pilot-light.git",
   "main": "src/index.js",
@@ -15,7 +15,7 @@
   "keywords": [
     "run",
     "warm",
-    "pilot_light",
+    "pilotLight",
     "cold",
     "starts",
     "lambda",

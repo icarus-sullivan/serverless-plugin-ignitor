@@ -1,5 +1,5 @@
 
-const IDENTIFIER = 'pilot_light:';
+const IDENTIFIER = 'pilotLight:';
 const IDENTIFIER_COLOR = '\x1b[32m';
 const COLOR_RESET = '\x1b[0m';
 

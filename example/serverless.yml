@@ -1,7 +1,7 @@
-service: pilot_light-example
+service: pilotLight-example
 
 custom: 
-  pilot_light:
+  pilotLight:
     - hello
     - /good.*/
       
@@ -20,12 +20,12 @@ functions:
   hello:
     handler: handlers.hello
     timeout: 10
-    pilot_light:
+    pilotLight:
       rate: 'rate(3 minutes)'
 
   goodbye:
     handler: handlers.goodbye
-    pilot_light:
+    pilotLight:
       wrapper: customWrapper.default
       input:
         custom: 'property'

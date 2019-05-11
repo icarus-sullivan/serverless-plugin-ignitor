@@ -2,7 +2,7 @@ const path = require('path');
 const build = require('../build');
 const { read, exists } = require('../file');
 
-const BUILD_DIR = 'pilot_light';
+const BUILD_DIR = 'pilotLight';
 
 const MOCK_FUNCTION_KEY = 'test';
 

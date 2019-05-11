@@ -24,7 +24,7 @@ const map = {
     {
       \\"lambda\\": \\"Example-dev-hello\\",
       \\"input\\": {
-        \\"pilot_light\\": true
+        \\"pilotLight\\": true
       }
     }
   ]
