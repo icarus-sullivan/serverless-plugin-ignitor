@@ -2,12 +2,11 @@
 
 const bPromise = require('bluebird');
 
-const { cli } = require('./file');
+const { cli, rm } = require('./file');
 const build = require('./build');
 const log = require('./log');
 const get = require('./get');
 const delegate = require('./delegate');
-const role = require('./role');
 
 class PluginFlambe {
   constructor(sls, options) {
@@ -18,12 +17,8 @@ class PluginFlambe {
 
     this.provider = this.sls.getProvider('aws');
 
-    // trick sls into seeing the late-lambda creation
-    this.sls.service.functions.flambeDelegate = {
-      handler: 'flambe/delegate.handler',
-      timeout: 30,
-      events: [],
-    };
+    // inject delegate code here or sls won't see it
+    delegate.lambda(this.sls.service.functions);
 
     this.commands = {
       flambe: {
@@ -125,23 +120,21 @@ class PluginFlambe {
     this.scheduled = Object.keys(this.sls.service.functions)
       .filter((name) => name.match(keys));
 
+    // if resources is not created yet, we need to create it in order to
+    // attach our delgate role + log groups
     if (!this.sls.service.resources || !this.sls.service.resources.Resources) {
       this.sls.service.resources = { Resources: {} };
     }
 
-    role.attachRoleToLambda(this.sls.service.functions.flambeDelegate);
-    role.createLambdaRole(this.sls.service.resources.Resources, {
-      stage: this.stage,
-      service: this.service,
-    });
+    delegate.lambdaRole(this.sls.service.resources.Resources, this);
   }
 
   wrap() {
-    this.mapping = {};
+    this.rates = {};
 
     const defaultEvent = {
       rate: 'rate(5 minutes)',
-      wrapper: 'flambe.flambe',
+      wrapper: 'flambeWrapper.handler',
       input: {
         flambe: true,
       },
@@ -153,11 +146,11 @@ class PluginFlambe {
         ...functions[name].flambe,
       };
       const { rate, wrapper, input } = config;
-      if (!this.mapping[rate]) {
-        this.mapping[rate] = [];
+      if (!this.rates[rate]) {
+        this.rates[rate] = [];
       }
 
-      this.mapping[rate].push({
+      this.rates[rate].push({
         lambda: functions[name].name,
         input,
       });
@@ -167,16 +160,11 @@ class PluginFlambe {
       log(`Wrapped ${handler}`, JSON.stringify(functions[name], null, 2));
     });
 
-    // create delegate, and inject configured mapping into the code
-    const delegateCode = delegate.create(this.mapping);
-    build.writeToBuildDir('delegate.js', delegateCode);
-
-    // create events for the delegate method, that will then call other lambdas
-    functions.flambeDelegate.events = delegate.events(this.mapping);
+    delegate.lambdaCode(functions, this.rates);
   }
 
   deploy() {
-    const rates = Object.keys(this.mapping);
+    const rates = Object.keys(this.rates);
 
     cli(`export AWS_DEFAULT_REGION=${this.region}`, {
       stdio: 'inherit',
@@ -185,19 +173,11 @@ class PluginFlambe {
 
     log('Igniting sources');
     for (const rate of rates) {
-      const event = { rate };
-      const cmd = [
-        'aws lambda invoke',
-        `--function-name '${this.service}-${this.stage}-flambeDelegate'`,
-        '--invocation-type Event',
-        `--payload '${JSON.stringify(event)}'`,
-        '.output',
-      ];
-      cli(cmd.join(' '), {
-        stdio: 'inherit',
-        cwd: process.cwd(),
-      });
+      delegate.lambdaInvoke({ rate, service: this.service, stage: this.stage });
     }
+
+    rm('.output');
+    rm('flambe');
   }
 }
 

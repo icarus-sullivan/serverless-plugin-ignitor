@@ -1,11 +1,5 @@
 module.exports = {
   extends: 'airbnb-base',
-  plugins: [
-    'jest',
-  ],
-  env: {
-    jest: true,
-  },
   rules: {
     'arrow-parens': ['error', 'always'],
     'no-console': 0,
@@ -13,11 +7,7 @@ module.exports = {
     'no-continue': 0,
     'no-restricted-syntax': 0,
     'no-prototype-builtins': 0,
-
-    'jest/no-disabled-tests': 'error',
-    'jest/no-focused-tests': 'error',
-    'jest/no-identical-title': 'warn',
-    'jest/prefer-to-have-length': 'warn',
-    'jest/valid-expect': 'warn',
+    'no-return-assign': 0,
+    'no-param-reassign': 0,
   },
 };

@@ -1,6 +1,6 @@
 {
   "name": "serverless-plugin-flambe",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Eliminates lambda cold starts",
   "repository": "https://github.com/icarus-sullivan/serverless-plugin-flambe.git",
   "main": "src/index.js",
@@ -8,9 +8,7 @@
     "src/*"
   ],
   "scripts": {
-    "lint": "eslint . --ext .js",
-    "test": "jest",
-    "test:watch": "jest --watch"
+    "lint": "eslint . --ext .js"
   },
   "keywords": [
     "run",
@@ -28,9 +26,7 @@
   "devDependencies": {
     "eslint": "^5.11.1",
     "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-jest": "^22.1.2",
-    "jest": "^23.6.0"
+    "eslint-plugin-import": "^2.14.0"
   },
   "dependencies": {
     "aws-sdk": "^2.426.0",

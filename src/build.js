@@ -7,7 +7,7 @@ const {
 // sls during local invokes and compilers with a MODULE_NOT_FOUND error
 const BUILD_DIR = 'flambe';
 
-const DEFAULT_WRAPPER = 'flambe.flambe';
+const DEFAULT_WRAPPER = 'flambeWrapper.handler';
 
 const writeToBuildDir = (name, contents) => write(
   path.resolve(BUILD_DIR, name),
@@ -21,9 +21,9 @@ const cloneToBuildDir = (filename) => writeToBuildDir(
 
 const prebuild = () => {
   mkdir(BUILD_DIR);
-  
+
   // prebuild default wrapper into the build directory
-  cloneToBuildDir('flambe.js');
+  cloneToBuildDir('flambeWrapper.js');
 };
 
 const wrap = (name, handler, wrapper = DEFAULT_WRAPPER) => {
