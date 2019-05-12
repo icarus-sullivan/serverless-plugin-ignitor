@@ -160,7 +160,7 @@ class PluginFlambe {
       log(`Wrapped ${handler}`, JSON.stringify(functions[name], null, 2));
     });
 
-    delegate.lambdaCode(functions, this.rates);
+    delegate.lambdaCode(this.sls.service.functions, this.rates);
   }
 
   deploy() {

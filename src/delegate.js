@@ -137,12 +137,12 @@ const lambdaRole = (resources, { stage, service }) => {
   };
 };
 
-const lambdaInvoke = ({ stage, service, rates }) => {
+const lambdaInvoke = ({ stage, service, rate }) => {
   const cmd = [
     'aws lambda invoke',
     `--function-name '${service}-${stage}-flambe'`,
     '--invocation-type Event',
-    `--payload '${JSON.stringify({ rates })}'`,
+    `--payload '${JSON.stringify({ rate })}'`,
     '.output',
   ];
   cli(cmd.join(' '), {
