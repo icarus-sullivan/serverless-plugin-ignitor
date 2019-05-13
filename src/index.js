@@ -118,7 +118,7 @@ class PluginFlambe {
     this.stage = get(this, 'optStage', get(this, 'sls.service.provider.stage', '*'));
     this.region = get(this, 'optRegion', get(this, 'sls.service.provider.region'));
     this.scheduled = Object.keys(this.sls.service.functions)
-      .filter((name) => name.match(keys)) || [];
+      .filter((name) => name.match(keys));
 
     // if resources is not created yet, we need to create it in order to
     // attach our delgate role + log groups
@@ -140,7 +140,8 @@ class PluginFlambe {
       },
     };
     const { functions } = this.sls.service;
-    this.scheduled.forEach((name) => {
+    const schedules = this.scheduled || [];
+    schedules.forEach((name) => {
       const config = {
         ...defaultEvent,
         ...functions[name].flambe,
