@@ -8,6 +8,8 @@ const log = require('./log');
 const get = require('./get');
 const delegate = require('./delegate');
 
+const util = require('util');
+
 class PluginFlambe {
   constructor(sls, options) {
     this.sls = sls;

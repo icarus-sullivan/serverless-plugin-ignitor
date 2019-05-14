@@ -139,11 +139,9 @@ const lambdaRole = (resources, { stage, service }) => {
 
 const lambdaInvoke = ({ stage, service, rate }) => {
   const cmd = [
-    'aws lambda invoke',
-    `--function-name '${service}-${stage}-flambe'`,
-    '--invocation-type Event',
-    `--payload '${JSON.stringify({ rate })}'`,
-    '.output',
+    'sls invoke -f flambe',
+    `--data '${JSON.stringify({ rate })}'`,
+    `-s ${stage}`,
   ];
   cli(cmd.join(' '), {
     stdio: 'inherit',

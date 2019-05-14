@@ -4,6 +4,7 @@
   "description": "Showing how serverless-plugin-flambe can be used",
   "scripts": {
     "deploy": "serverless deploy",
+    "build": "rm -rf node_modules/serverless-plugin-flambe && yarn add -D ../",
     "local:hello": "serverless invoke local --function hello -p fixtures/flambe.json",
     "local:goodbye": "serverless invoke local -f goodbye",
     "debug": "serverless flambe"
