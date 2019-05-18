@@ -36,7 +36,7 @@ const wrap = (name, handler, wrapper = DEFAULT_WRAPPER) => {
   const requireOriginal = `const original = require('../${inputPath}').${functionName};`;
   const requireWrapperPrefix = wrapper === DEFAULT_WRAPPER ? '.' : '..';
   const requireWrapper = `const wrapper = require('${requireWrapperPrefix}/${wrapperPath}').${wrapperFunctionName};`;
-  const exportModule = 'module.exports = { handler: wrapper(original) };';
+  const exportModule = 'module.exports.handler = wrapper(original);';
 
   writeToBuildDir(overrideFilename, `${requireOriginal}\n${requireWrapper}\n\n${exportModule}`);
   return overridePath;

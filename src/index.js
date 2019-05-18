@@ -73,6 +73,7 @@ class PluginFlambe {
         .then(() => this.sls.pluginManager.spawn('flambe:wrap')),
 
       'before:invoke:local:invoke': () => bPromise.bind(this)
+        .then(() => this.sls.pluginManager.spawn('flambe:schedule'))
         .then(() => this.sls.pluginManager.spawn('flambe:wrap')),
 
       'after:invoke:local:invoke': () => bPromise.bind(this)
@@ -158,7 +159,7 @@ class PluginFlambe {
 
       const { handler } = functions[name];
       functions[name].handler = build.wrap(name, handler, wrapper, false);
-      log(`Wrapped ${handler}`, JSON.stringify(functions[name], null, 2));
+      log(`Wrapped ${handler}`, functions[name].name);
     });
 
     delegate.lambdaCode(this.sls.service.functions, this.rates);
