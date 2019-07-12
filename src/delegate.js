@@ -47,7 +47,9 @@ const lambdaCode = (functions, rates) => {
 };
 
 
-const lambdaRole = (resources, { stage, service }) => {
+const lambdaRole = (resources, plugin) => {
+  const { stage, service } = plugin;
+  const { iamRoleStatements } = plugin.sls.service.provider;
   resources[DELEGATE_LOG_GROUP] = {
     Type: 'AWS::Logs::LogGroup',
     Properties: {
@@ -137,11 +139,39 @@ const lambdaRole = (resources, { stage, service }) => {
                 Action: [
                   'lambda:InvokeFunction',
                 ],
-                Resource: '*',
+                Resource: [
+                  {
+                    'Fn::Join': [
+                      ':',
+                      [
+                        'arn:aws:lambda',
+                        {
+                          Ref: 'AWS::Region',
+                        },
+                        {
+                          Ref: 'AWS::AccountId',
+                        },
+                        `function:${service}-${stage}-*`,
+                      ],
+                    ],
+                  },
+                ],
               },
             ],
           },
         },
+        ...(Array.isArray(iamRoleStatements) 
+          ? [{
+            PolicyName: 'shared',
+            PolicyDocument: {
+              Version: '2012-10-17',
+              Statement: [
+                ...iamRoleStatements,
+              ],
+            },
+          }]
+          : []
+        ),
       ],
     },
   };
