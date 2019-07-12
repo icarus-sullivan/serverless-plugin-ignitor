@@ -9,16 +9,26 @@ const delegate = load('delegate');
 const DELEGATE_LOG_GROUP = 'FlambeLogGroup';
 const DELEGATE_ROLE_NAME = 'FlambeLambdaFunctionRole';
 
-const lambda = (functions) => functions.flambe = {
-  handler: 'flambe/delegate.handler',
-  timeout: 30,
-  events: [],
-  role: {
-    'Fn::GetAtt': [
-      DELEGATE_ROLE_NAME,
-      'Arn',
-    ],
-  },
+const lambda = (functions) => {
+  const def = {
+    handler: 'flambe/delegate.handler',
+    timeout: 30,
+    events: [],
+    role: {
+      'Fn::GetAtt': [
+        DELEGATE_ROLE_NAME,
+        'Arn',
+      ],
+    },
+  };
+  if (Array.isArray(functions)) {
+    functions.push({
+       flambe: def,
+    });
+  }
+  else {
+    functions.flambe = def;
+  }
 };
 
 const lambdaCode = (functions, rates) => {
