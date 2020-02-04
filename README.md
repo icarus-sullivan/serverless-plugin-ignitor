@@ -111,3 +111,10 @@ Calls per month: `8640`
 Total monthly cost per-lambda: `$0.016`
 
 _**Prices calculated using the following aws information  [here](https://aws.amazon.com/lambda/pricing/)._
+
+
+## Changelog
+
+**0.0.12**
+
+- Decrease memorySize of generated flambe to 128 MB

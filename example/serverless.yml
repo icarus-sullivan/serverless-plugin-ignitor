@@ -2,8 +2,10 @@ service: flambe-example
 
 custom: 
   flambe:
-    - hello
-    - /good.*/
+    regex:
+      - hello
+      - /good.*/
+    memorySize: 128
       
   webpack:
     includeModules: false
@@ -11,30 +13,27 @@ custom:
 
 provider:
   name: aws
-  runtime: nodejs8.10
+  runtime: nodejs12.x
   region: us-west-2 
   package:
     individually: true
 
 functions:
-  - 
-    hello:
-      handler: handlers.hello
-      timeout: 10
-      flambe:
-        rate: 'rate(3 minutes)'
+  hello:
+    handler: handlers.hello
+    timeout: 10
+    flambe:
+      rate: 'rate(3 minutes)'
 
-  - 
-    goodbye:
-      handler: handlers.goodbye
-      flambe:
-        wrapper: customWrapper.default
-        input:
-          custom: 'property'
+  goodbye:
+    handler: handlers.goodbye
+    flambe:
+      wrapper: customWrapper.default
+      input:
+        custom: 'property'
 
-  -
-    ignored:
-      handler: handlers.goodbye # re-used for brevity
+  ignored:
+    handler: handlers.goodbye # re-used for brevity
 
 plugins:
   - serverless-plugin-flambe

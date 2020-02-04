@@ -13,6 +13,7 @@ const lambda = (functions) => {
   const def = {
     handler: 'flambe/delegate.handler',
     timeout: 30,
+    memorySize: 128,
     events: [],
     role: {
       'Fn::GetAtt': [
