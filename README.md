@@ -117,4 +117,4 @@ _**Prices calculated using the following aws information  [here](https://aws.ama
 
 **0.0.12**
 
-- Decrease memorySize of generated flambe to 128 MB
+- Decrease memorySize of generated function to 128 MB

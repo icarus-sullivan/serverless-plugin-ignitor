@@ -26,7 +26,7 @@ functions:
       rate: 'rate(3 minutes)'
 
   goodbye:
-    handler: handlers.goodbye
+    handler: src/test/goodbye.handler
     flambe:
       wrapper: customWrapper.default
       input:
