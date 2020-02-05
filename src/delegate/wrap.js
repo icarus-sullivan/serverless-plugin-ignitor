@@ -4,7 +4,7 @@ const fse = require('fs-extra');
 const { BUILD_DIR, WRAPPER_HANDLER, WRAPPER_RESOLUTION } = require('../flambe.config');
 
 const template = slim(`
-const original = require('./{{orgPath}}').{{orgHandler}};
+const original = require('../{{orgPath}}').{{orgHandler}};
 const wrapper = require('./{{wrapPath}}').{{wrapHandler}};
 
 module.exports = { handler: wrapper(original) };
@@ -29,7 +29,6 @@ module.exports = { handler: wrapper(original) };
     }
 
     const org = resolvePath(handler);
-    fse.copySync(org.js, resolve(BUILD_DIR, org.js));
 
     const override = resolve(BUILD_DIR, `${name}.js`);
     fse.writeFileSync(override, template({
