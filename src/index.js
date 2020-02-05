@@ -18,11 +18,9 @@ module.exports = class PluginFlambe {
       }
     };
 
-    const plugin = this;
-    const bind = (fn) => async () => P.bind(plugin).then(fn.bind(plugin, plugin));
-    const boundFlambe = bind(flambe);
-    const boundDeploy = bind(deploy);
-    const boundClean = bind(clean);
+    const boundFlambe = () => P.bind(this).then(flambe.bind(this, this));
+    const boundDeploy = () => P.bind(this).then(deploy.bind(this, this));
+    const boundClean = () => P.bind(this).then(clean.bind(this, this));
 
     this.hooks = {
       // processing 
@@ -37,7 +35,7 @@ module.exports = class PluginFlambe {
 
       // clean up
       'after:package:createDeploymentArtifacts': boundClean,
-      'after:invoke:local:invoke': boundClean,
+      // 'after:invoke:local:invoke': boundClean,
       'after:run:run': boundClean,
     };
   }

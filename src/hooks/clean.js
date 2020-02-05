@@ -1,4 +1,4 @@
 const { removeSync } = require('fs-extra');
 const { BUILD_DIR } = require('../flambe.config');
 
-module.exports = () => removeSync(BUILD_DIR);
+module.exports = async () => removeSync(BUILD_DIR);

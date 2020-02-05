@@ -33,11 +33,13 @@ By default all functions will then be automatically scheduled, wrapped to accept
 In case your project doesn't require all of your lambdas to be warm, you can list the name of a specific lambda or use regular expressions declared in the custom level variables.
 
 Example:
-```
+```yaml
 custom:
   flambe:
-    - hello
-    - /good.*/ 
+    regex:
+      - hello
+      - /good.*/
+    memorySize: 512
 ```
 
 The above example will keep the function `hello` warm as well as functions prefixed with the name `good`. If there are no lambdas that match in the declared list, nothing will be scheduled.
@@ -115,6 +117,8 @@ _**Prices calculated using the following aws information  [here](https://aws.ama
 
 ## Changelog
 
-**0.0.12**
+**0.1.0**
 
+- Changed how flambe custom options are defined
 - Decrease memorySize of generated function to 128 MB
+- Using Serverless lambda invocation instead of custom

@@ -4,7 +4,7 @@ module.exports = {
   // !!WARNING!! Do not include a '.' in the directory name this confuses
   // sls during local invokes and compilers with a MODULE_NOT_FOUND error
   SRC_DIR: __dirname,
-  BUILD_DIR: resolve(process.cwd(), '.flambe'),
+  BUILD_DIR: resolve(process.cwd(), 'flambe'),
   WRAPPER_FILENAME: 'flambe-default-wrapper.js',
   WRAPPER_HANDLER: 'flambe-default-wrapper.handler',
   WRAPPER_RESOLUTION: {
@@ -16,7 +16,7 @@ module.exports = {
   DELEGATE_EVENTS_PATH: 'serverless.service.functions.flambe.events',
   DELEGATE_LAMBDA_NAME: 'serverless.service.functions.flambe.name',
   DELEGATE_DEFINITION: {
-    handler: '.flambe/delegate.handler',
+    handler: 'flambe/delegate.handler',
     timeout: 30,
     memorySize: 128,
     events: [],

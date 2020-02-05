@@ -4,10 +4,10 @@ const fse = require('fs-extra');
 const { BUILD_DIR, WRAPPER_HANDLER, WRAPPER_RESOLUTION } = require('../flambe.config');
 
 const template = slim(`
-  const original = require('./{{orgPath}}').{{orgHandler}};
-  const wrapper = require('./{{wrapPath}}').{{wrapHandler}};
+const original = require('./{{orgPath}}').{{orgHandler}};
+const wrapper = require('./{{wrapPath}}').{{wrapHandler}};
 
-  module.exports.handler = wrapper(original);
+module.exports = { handler: wrapper(original) };
 `);
 
   const resolvePath = (file) => {
@@ -39,5 +39,5 @@ const template = slim(`
       wrapHandler: wrap.export,
     }));
 
-    return `.flambe/${name}.handler`;
+    return `flambe/${name}.handler`;
   };

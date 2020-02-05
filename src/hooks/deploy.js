@@ -1,7 +1,8 @@
 const _ = require('../utils/lodash');
+const log = require('../utils/log');
 const { DELEGATE_LAMBDA_NAME } = require('../flambe.config');
 
-module.exports = (ctx) => {
+module.exports = async (ctx) => {
   const rates = Object.keys(ctx.rates);
   
   const credentials = ctx.serverless.providers.aws.getCredentials();
@@ -22,6 +23,6 @@ module.exports = (ctx) => {
     }
   }
 
-  // log('Igniting sources');
-  rates.map(invoke);
+  log('Igniting sources');
+  await Promise.all(rates.map(invoke));
 }

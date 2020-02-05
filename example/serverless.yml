@@ -1,11 +1,11 @@
 service: flambe-example
 
 custom: 
-  flambe:
-    regex:
-      - hello
-      - /good.*/
-    memorySize: 128
+  # flambe:
+  #   regex:
+  #     - hello
+  #     - /good.*/
+  #   memorySize: 128
       
   webpack:
     includeModules: false
@@ -20,7 +20,7 @@ provider:
 
 functions:
   hello:
-    handler: handlers.hello
+    handler: src/handlers.hello
     timeout: 10
     flambe:
       rate: 'rate(3 minutes)'
@@ -33,7 +33,7 @@ functions:
         custom: 'property'
 
   ignored:
-    handler: handlers.goodbye # re-used for brevity
+    handler: src/test/goodbye.handler # re-used for brevity
 
 plugins:
   - serverless-plugin-flambe

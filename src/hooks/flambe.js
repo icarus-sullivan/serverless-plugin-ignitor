@@ -1,4 +1,5 @@
 const fse = require('fs-extra');
+const log = require('../utils/log');
 const { resolve } = require('path');
 const _ = require('../utils/lodash');
 const { 
@@ -60,6 +61,8 @@ module.exports = async (ctx) => {
 
     const override = wrap(name, wrapper, handler);
     ctx = _.set(ctx, [FUNCTIONS_PATH, b, 'handler'].join('.'), override);
+
+    log(JSON.stringify(functions[b], null, 2));
     return a;
   }, {});
 
@@ -75,6 +78,4 @@ module.exports = async (ctx) => {
 
   // write flambe delegate 
   fse.writeFileSync(resolve(BUILD_DIR, DELEGATE_FILENAME), code({ rates: JSON.stringify(rates, null, 2) }))
-
-  console.log(_.get(ctx, FUNCTIONS_PATH));
 }
