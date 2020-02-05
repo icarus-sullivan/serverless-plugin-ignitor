@@ -1,11 +1,11 @@
 service: flambe-example
 
 custom: 
-  # flambe:
-  #   regex:
-  #     - hello
-  #     - /good.*/
-  #   memorySize: 128
+  flambe:
+    regex:
+      - hello
+      - /good.*/
+    memorySize: 128
       
   webpack:
     includeModules: false
