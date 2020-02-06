@@ -35,7 +35,7 @@ module.exports = class PluginFlambe {
 
       // clean up
       'after:package:createDeploymentArtifacts': boundClean,
-      // 'after:invoke:local:invoke': boundClean,
+      'after:invoke:local:invoke': boundClean,
       'after:run:run': boundClean,
     };
   }

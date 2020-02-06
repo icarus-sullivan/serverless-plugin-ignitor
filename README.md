@@ -117,6 +117,10 @@ _**Prices calculated using the following aws information  [here](https://aws.ama
 
 ## Changelog
 
+**0.1.2**
+
+- Re-enabled cleanup phase post local invocation
+
 **0.1.1**
 
 - PATCH: Using relative paths for original handlers instead of copying the source
