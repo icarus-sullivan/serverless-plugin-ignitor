@@ -1,6 +1,6 @@
 {
   "name": "serverless-plugin-flambe",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Eliminates lambda cold starts",
   "repository": "https://github.com/icarus-sullivan/serverless-plugin-flambe.git",
   "main": "src/index.js",

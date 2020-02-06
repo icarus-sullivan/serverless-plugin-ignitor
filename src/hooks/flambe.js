@@ -35,7 +35,7 @@ module.exports = async (ctx) => {
   const flambe = {
     regex,
     memorySize,
-    stage: _.oneOf(ctx, ['options.state', 'serverless.service.provider.stage'], '*'),
+    stage: _.oneOf(ctx, ['options.stage', 'serverless.service.provider.stage'], '*'),
     region: _.oneOf(ctx, ['options.region', 'serverless.service.provider.region']),
     service: _.oneOf(ctx, ['serverless.service.service.name', 'serverless.service.service']),
     iamRoleStatements: _.get(ctx, 'serverless.service.provider.iamRoleStatements'),
