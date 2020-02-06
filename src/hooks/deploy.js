@@ -6,9 +6,9 @@ module.exports = async (ctx) => {
   const rates = Object.keys(ctx.rates);
   
   const credentials = ctx.serverless.providers.aws.getCredentials();
-  credentials.region = ctx.serverless.providers.aws.getRegion();
+  credentials.region = _.oneOf(ctx, ['options.region', 'serverless.service.provider.region']);
 
-  ctx.serverless.providers.aws.sdk.config.update({ maxRetries: 20});
+  ctx.serverless.providers.aws.sdk.config.update({ maxRetries: 20 });
   const lambda = new ctx.serverless.providers.aws.sdk.Lambda(credentials);
 
   const invoke = async (rate) => {

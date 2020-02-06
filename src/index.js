@@ -4,7 +4,8 @@ const clean = require('./hooks/clean');
 const deploy = require('./hooks/deploy');
 
 module.exports = class PluginFlambe {
-  constructor(serverless) {
+  constructor(serverless, options) {
+    this.options = options;
     this.serverless = serverless;
     this.originalServicePath = this.serverless.config.servicePath;
 
