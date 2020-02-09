@@ -117,6 +117,10 @@ _**Prices calculated using the following aws information  [here](https://aws.ama
 
 ## Changelog
 
+**0.1.5**
+
+- Flambe log retention now uses the value set in the provider
+
 **0.1.4**
 
 - Fixed a misspelling that was preventing options stage from being resolved

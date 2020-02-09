@@ -1,8 +1,8 @@
 const fse = require('fs-extra');
-const log = require('../utils/log');
 const { resolve } = require('path');
-const _ = require('../utils/lodash');
-const { 
+const log = require('../utils/log');
+const { set, get, oneOf } = require('../utils/lodash');
+const {
   BUILD_DIR,
   SRC_DIR,
   WRAPPER_FILENAME,
@@ -11,6 +11,11 @@ const {
   DEFAULT_EVENT,
   DELEGATE_LOG_GROUP_PATH,
   DELEGATE_ROLE_NAME_PATH,
+  STAGE_PATHS,
+  REGION_PATHS,
+  SERVICE_PATHS,
+  IAM_ROLES_PATH,
+  LOG_RETENTION_PATH,
 } = require('../flambe.config');
 
 const def = require('../delegate/definition');
@@ -22,27 +27,34 @@ const wrap = require('../delegate/wrap');
 module.exports = async (ctx) => {
   // build directory
   await fse.ensureDir(BUILD_DIR);
-  await fse.copy(resolve(SRC_DIR, WRAPPER_FILENAME), resolve(BUILD_DIR, WRAPPER_FILENAME));
+  await fse.copy(
+    resolve(SRC_DIR, WRAPPER_FILENAME),
+    resolve(BUILD_DIR, WRAPPER_FILENAME),
+  );
 
-  const options = _.get(ctx, 'serverless.service.custom.flambe.regex', ['.*']);
-  const memorySize = _.get(ctx, 'serverless.service.custom.flambe.memorySize', 128);
+  const options = get(ctx, 'serverless.service.custom.flambe.regex', ['.*']);
+  const memorySize = get(
+    ctx,
+    'serverless.service.custom.flambe.memorySize',
+    128,
+  );
   const regex = new RegExp(
     options.map((k) => k.replace(/\//g, '')).join('|'),
     'g',
   );
 
   // set flambe variable
-  const flambe = {
+  const flambeOptions = {
     regex,
     memorySize,
-    stage: _.oneOf(ctx, ['options.stage', 'serverless.service.provider.stage'], '*'),
-    region: _.oneOf(ctx, ['options.region', 'serverless.service.provider.region']),
-    service: _.oneOf(ctx, ['serverless.service.service.name', 'serverless.service.service']),
-    iamRoleStatements: _.get(ctx, 'serverless.service.provider.iamRoleStatements'),
+    stage: oneOf(ctx, STAGE_PATHS, '*'),
+    region: oneOf(ctx, REGION_PATHS),
+    service: oneOf(ctx, SERVICE_PATHS),
+    iamRoleStatements: get(ctx, IAM_ROLES_PATH),
+    logRetentionInDays: get(ctx, LOG_RETENTION_PATH),
   };
 
-
-  const functions = _.get(ctx, FUNCTIONS_PATH, {})
+  const functions = get(ctx, FUNCTIONS_PATH, {});
   const scheduled = Object.keys(functions).filter((name) => name.match(regex));
 
   const rates = scheduled.reduce((a, b) => {
@@ -54,28 +66,33 @@ module.exports = async (ctx) => {
 
     const { rate, wrapper, input } = config;
 
-    a[rate] = (a[rate] || []).concat([{
-      lambda: name,
-      input,
-    }]);
+    a[rate] = (a[rate] || []).concat([
+      {
+        lambda: name,
+        input,
+      },
+    ]);
 
     const override = wrap(name, wrapper, handler);
-    ctx = _.set(ctx, [FUNCTIONS_PATH, b, 'handler'].join('.'), override);
+    ctx = set(ctx, [FUNCTIONS_PATH, b, 'handler'].join('.'), override);
 
     log(JSON.stringify(functions[b], null, 2));
     return a;
   }, {});
 
-  const flambeContext = { ...ctx, ...flambe, rates };
+  const flambeContext = { ...ctx, ...flambeOptions, rates };
   const d = def(flambeContext);
   const r = role(flambeContext);
   const lg = logGroup(flambeContext);
 
-  ctx = _.set(ctx, FUNCTIONS_PATH, d);
-  ctx = _.set(ctx, DELEGATE_ROLE_NAME_PATH, r);
-  ctx = _.set(ctx, DELEGATE_LOG_GROUP_PATH, lg);
-  ctx = _.set(ctx, 'rates', rates);
+  ctx = set(ctx, FUNCTIONS_PATH, d);
+  ctx = set(ctx, DELEGATE_ROLE_NAME_PATH, r);
+  ctx = set(ctx, DELEGATE_LOG_GROUP_PATH, lg);
+  ctx = set(ctx, 'rates', rates);
 
-  // write flambe delegate 
-  fse.writeFileSync(resolve(BUILD_DIR, DELEGATE_FILENAME), code({ rates: JSON.stringify(rates, null, 2) }))
-}
+  // write flambe delegate
+  fse.writeFileSync(
+    resolve(BUILD_DIR, DELEGATE_FILENAME),
+    code({ rates: JSON.stringify(rates, null, 2) }),
+  );
+};

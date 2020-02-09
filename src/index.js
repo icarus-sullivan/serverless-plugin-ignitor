@@ -13,10 +13,8 @@ module.exports = class PluginFlambe {
     this.commands = {
       flambe: {
         usage: 'Eliminates lambda cold starts',
-        lifecycleEvents: [
-          'flambe',
-        ],
-      }
+        lifecycleEvents: ['flambe'],
+      },
     };
 
     const boundFlambe = () => P.bind(this).then(flambe.bind(this, this));
@@ -24,7 +22,7 @@ module.exports = class PluginFlambe {
     const boundClean = () => P.bind(this).then(clean.bind(this, this));
 
     this.hooks = {
-      // processing 
+      // processing
       'flambe:flambe': boundFlambe,
       'before:package:createDeploymentArtifacts': boundFlambe,
       'before:deploy:function:packageFunction': boundFlambe,
@@ -40,5 +38,4 @@ module.exports = class PluginFlambe {
       'after:run:run': boundClean,
     };
   }
-
 };

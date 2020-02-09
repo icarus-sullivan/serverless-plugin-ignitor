@@ -1,4 +1,3 @@
-
 module.exports = ({ service, stage, iamRoleStatements }) => ({
   Type: 'AWS::IAM::Role',
   Properties: {
@@ -8,9 +7,7 @@ module.exports = ({ service, stage, iamRoleStatements }) => ({
         {
           Effect: 'Allow',
           Principal: {
-            Service: [
-              'lambda.amazonaws.com',
-            ],
+            Service: ['lambda.amazonaws.com'],
           },
           Action: 'sts:AssumeRole',
         },
@@ -24,9 +21,7 @@ module.exports = ({ service, stage, iamRoleStatements }) => ({
           Statement: [
             {
               Effect: 'Allow',
-              Action: [
-                'logs:CreateLogStream',
-              ],
+              Action: ['logs:CreateLogStream'],
               Resource: [
                 {
                   'Fn::Join': [
@@ -47,9 +42,7 @@ module.exports = ({ service, stage, iamRoleStatements }) => ({
             },
             {
               Effect: 'Allow',
-              Action: [
-                'logs:PutLogEvents',
-              ],
+              Action: ['logs:PutLogEvents'],
               Resource: [
                 {
                   'Fn::Join': [
@@ -78,9 +71,7 @@ module.exports = ({ service, stage, iamRoleStatements }) => ({
           Statement: [
             {
               Effect: 'Allow',
-              Action: [
-                'lambda:InvokeFunction',
-              ],
+              Action: ['lambda:InvokeFunction'],
               Resource: [
                 {
                   'Fn::Join': [
@@ -102,18 +93,17 @@ module.exports = ({ service, stage, iamRoleStatements }) => ({
           ],
         },
       },
-      ...(Array.isArray(iamRoleStatements) 
-        ? [{
-          PolicyName: 'shared',
-          PolicyDocument: {
-            Version: '2012-10-17',
-            Statement: [
-              ...iamRoleStatements,
-            ],
-          },
-        }]
-        : []
-      ),
+      ...(Array.isArray(iamRoleStatements)
+        ? [
+            {
+              PolicyName: 'shared',
+              PolicyDocument: {
+                Version: '2012-10-17',
+                Statement: [...iamRoleStatements],
+              },
+            },
+          ]
+        : []),
     ],
   },
 });
