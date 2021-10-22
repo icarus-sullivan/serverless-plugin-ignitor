@@ -14,7 +14,7 @@ module.exports = (ctx) => {
     memorySize: ctx.memorySize,
     events: Object.keys(rates).map((rate) => ({
       schedule: {
-        rate,
+        rate: [rate],
         enabled: true,
         input: {
           rate,
