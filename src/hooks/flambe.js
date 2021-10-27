@@ -43,6 +43,11 @@ module.exports = async (ctx) => {
     'g',
   );
 
+  const globalRate = get(ctx, 'serverless.service.custom.flambe.rate');
+  if (globalRate) {
+    DEFAULT_EVENT.rate = globalRate;
+  }
+
   // set flambe variable
   const flambeOptions = {
     regex,
@@ -75,10 +80,12 @@ module.exports = async (ctx) => {
 
     const override = wrap(name, wrapper, handler);
     ctx = set(ctx, [FUNCTIONS_PATH, b, 'handler'].join('.'), override);
-
-    log(JSON.stringify(functions[b], null, 2));
     return a;
   }, {});
+
+  if (Object.keys(rates).length > 0) {
+    log(JSON.stringify(rates, null, 2));
+  }
 
   const flambeContext = { ...ctx, ...flambeOptions, rates };
   const d = def(flambeContext);

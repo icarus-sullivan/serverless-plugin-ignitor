@@ -40,6 +40,7 @@ custom:
       - hello
       - /good.*/
     memorySize: 512
+    rate: rate(5 minutes)
 ```
 
 The above example will keep the function `hello` warm as well as functions prefixed with the name `good`. If there are no lambdas that match in the declared list, nothing will be scheduled.

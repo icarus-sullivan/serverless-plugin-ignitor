@@ -25,6 +25,8 @@ module.exports = async (ctx) => {
     }
   };
 
-  log('Igniting sources');
+  if (rates.length > 0) {
+    log('Igniting sources');
+  }
   await Promise.all(rates.map(invoke));
 };
